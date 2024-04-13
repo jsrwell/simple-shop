@@ -132,30 +132,60 @@ class App(ctk.CTk):
 
     def create_home_frame(self):
         """Create the home frame."""
-
         self.home_frame = ctk.CTkFrame(
             self, corner_radius=0, fg_color="transparent")
         self.home_frame.grid_columnconfigure(0, weight=1)
 
+        # Imagem
         self.home_frame_large_image_label = ctk.CTkLabel(
             self.home_frame, text="",
             image=self.large_test_image,
             corner_radius=50)
         self.home_frame_large_image_label.grid(
-            row=0, column=0, padx=20, pady=10)
+            row=0, column=0, columnspan=4, padx=20, pady=10)
 
-        self.home_frame.grid_rowconfigure(1, weight=1)
+        # Labels
+        start_label = ctk.CTkLabel(self.home_frame, text="Início da Pesquisa:")
+        start_label.grid(row=1, column=0, padx=(20, 10), pady=10, sticky="e")
 
-        # Database search
-        start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
-        end_date = datetime.now().strftime("%Y-%m-%d")
+        end_label = ctk.CTkLabel(self.home_frame, text="Final da Pesquisa:")
+        end_label.grid(row=1, column=2, padx=(10, 20), pady=10, sticky="e")
+
+        # Date inputs
+        self.start_date = DateEntry(self.home_frame, date_pattern="dd/mm/yyyy")
+        self.start_date.set_date(datetime.now() - timedelta(days=30))
+        self.start_date.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        self.start_date.bind("<<DateEntrySelected>>", self.filter_records)
+
+        self.end_date = DateEntry(self.home_frame, date_pattern="dd/mm/yyyy")
+        self.end_date.set_date(datetime.now())
+        self.end_date.grid(row=1, column=3, padx=10, pady=10, sticky="w")
+        self.end_date.bind("<<DateEntrySelected>>", self.filter_records)
+
+        # Configure column weights to make labels and entries equal in width
+        self.home_frame.grid_columnconfigure(1, weight=1)
+        self.home_frame.grid_columnconfigure(3, weight=1)
+
+        # Initial data filter
+        self.filter_records()
+
+    def filter_records(self, event=None):
+        """Filter records based on the selected date range."""
+        start_date = self.start_date.get_date().strftime("%Y-%m-%d")
+        end_date = self.end_date.get_date().strftime("%Y-%m-%d")
         data = get_records_by_date_range(start_date, end_date)
 
-        # Table
+        # Destroy and recreate the scrollable table frame
+        if hasattr(self, "scrollable_table_frame"):
+            self.scrollable_table_frame.destroy()
+
         self.scrollable_table_frame = ScrollableTableFrame(
             master=self.home_frame, product_entrys=data, app_instance=self)
         self.scrollable_table_frame.grid(
-            row=1, column=0, padx=20, pady=10, sticky="nsew")
+            row=2, column=0, columnspan=4, padx=20, pady=(0, 10), sticky="nsew")
+
+        # Configure the last row to expand when the window is resized
+        self.home_frame.grid_rowconfigure(2, weight=1)
 
     def create_second_frame(self):
         """Create the second frame."""
