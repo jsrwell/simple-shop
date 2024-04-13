@@ -341,7 +341,17 @@ class App(ctk.CTk):
         self.third_frame = ctk.CTkFrame(
             self, corner_radius=0, fg_color="transparent")
 
-        # Add content for the third frame here
+        # Contact text
+        texto = ("Obrigado por usar nossa aplicação!\n\n"
+                 "Estamos sempre trabalhando em novas implementações "
+                 "para melhorar sua experiência.\n\n"
+                 "Se precisar de ajuda ou tiver alguma sugestão, entre em contato conosco:\n"
+                 "E-mail: wellingtonjsramos@hotmail.com\n"
+                 "Telefone: +55 (41) 99725-8110")
+
+        label = ctk.CTkLabel(
+            self.third_frame, text=texto, font=ctk.CTkFont(size=14))
+        label.pack(padx=20, pady=20)
 
     def select_frame_by_name(self, name):
         """Select a frame by its name."""

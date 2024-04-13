@@ -6,6 +6,18 @@ from datetime import datetime
 import customtkinter as ctk
 
 
+def translate_column(header):
+    """Traduz os títulos das colunas para o português."""
+    traduction = {
+        "name": "Nome",
+        "price": "Preço",
+        "details": "Detalhes",
+        "date": "Data",
+        "actions": "Ações"
+    }
+    return traduction.get(header, header)
+
+
 class ScrollableTableFrame(ctk.CTkScrollableFrame):
     """A scrollable frame containing a table."""
 
@@ -29,7 +41,8 @@ class ScrollableTableFrame(ctk.CTkScrollableFrame):
         headers = ("name", "price", "details", "date", "actions")
         for col, header in enumerate(headers):
             label = ctk.CTkLabel(
-                self, text=header, anchor="center", font=ctk.CTkFont(size=12))
+                self, text=translate_column(header), anchor="center",
+                font=ctk.CTkFont(size=12))
             label.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
 
         # Table data
@@ -47,20 +60,21 @@ class ScrollableTableFrame(ctk.CTkScrollableFrame):
                         item.get(header, "1900-01-01"),
                         "%Y-%m-%d").strftime("%d/%m/%Y")
                     fg_color = None
-
                 elif header == "actions":
                     # Add delete button
                     delete_button = ctk.CTkButton(
-                        self, text="Delete",
+                        self, text="Excluir",
                         command=lambda record_id=item["id"]:
                         app_instance.delete_record_and_redirect(record_id))
                     delete_button.grid(row=row, column=col,
                                        padx=5, pady=5, sticky="nsew")
                     continue
-
                 else:
                     value_text = str(item.get(header, ""))
                     fg_color = None
+
+                    if len(value_text) > 30:
+                        value_text = value_text[:30] + "..."
 
                 label = ctk.CTkLabel(self, text=value_text,
                                      anchor="center", fg_color=fg_color)
