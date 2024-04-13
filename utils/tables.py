@@ -1,40 +1,39 @@
-import customtkinter as ctk
+"""
+This module contains the ScrollableTableFrame
+class which is a scrollable frame containing a table.
+"""
 from datetime import datetime
+import customtkinter as ctk
+
 
 class ScrollableTableFrame(ctk.CTkScrollableFrame):
-    def __init__(self, master, product_entrys, sells, **kwargs):
+    """A scrollable frame containing a table."""
+
+    def __init__(self, master, product_entrys, app_instance, **kwargs):
+        """Initialize the scrollable table frame."""
+
         super().__init__(master, **kwargs)
-
         self.product_entrys = product_entrys
-        self.sells = sells
+        self.create_table(app_instance)
 
-        self.create_table()
+    def create_table(self, app_instance):
+        """Create the table."""
 
-    def create_table(self):
-        # Criar uma lista única com entrada/saída indicada pelo valor
-        combined_list = []
+        product_entrys = self.product_entrys
 
-        # Adicionando entradas
-        for product in self.product_entrys:
-            product_copy = product.copy()  # Fazendo uma cópia para evitar alterações indesejadas na lista original
-            product_copy['price'] *= -1
-            combined_list.append(product_copy)
+        # Sort the combined list by date from recent to old
+        product_entrys.sort(key=lambda x: datetime.strptime(
+            x.get("date", "1900-01-01"), "%Y-%m-%d"), reverse=True)
 
-        # Adicionando saídas
-        for sell in self.sells:
-            combined_list.append(sell)
-
-        # Ordenar a lista combinada pela data do recente para o antigo
-        combined_list.sort(key=lambda x: datetime.strptime(x.get("date", "1900-01-01"), "%Y-%m-%d"), reverse=True)
-
-        # Cabeçalhos da tabela
-        headers = ("name", "price", "quantity", "details", "date")
+        # Table headers
+        headers = ("name", "price", "details", "date", "actions")
         for col, header in enumerate(headers):
-            label = ctk.CTkLabel(self, text=header, anchor="center", font=ctk.CTkFont(size=12))
+            label = ctk.CTkLabel(
+                self, text=header, anchor="center", font=ctk.CTkFont(size=12))
             label.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
 
-        # Dados da tabela
-        for row, item in enumerate(combined_list, start=1):
+        # Table data
+        for row, item in enumerate(product_entrys, start=1):
             for col, header in enumerate(headers):
                 if header == "price":
                     if item["price"] < 0:
@@ -44,18 +43,32 @@ class ScrollableTableFrame(ctk.CTkScrollableFrame):
                         value_text = "+{:.2f}".format(item.get(header, 0))
                         fg_color = "green"
                 elif header == "date":
-                    value_text = datetime.strptime(item.get(header, "1900-01-01"), "%Y-%m-%d").strftime("%d/%m/%Y")
+                    value_text = datetime.strptime(
+                        item.get(header, "1900-01-01"),
+                        "%Y-%m-%d").strftime("%d/%m/%Y")
                     fg_color = None
+
+                elif header == "actions":
+                    # Add delete button
+                    delete_button = ctk.CTkButton(
+                        self, text="Delete",
+                        command=lambda record_id=item["id"]:
+                        app_instance.delete_record_and_redirect(record_id))
+                    delete_button.grid(row=row, column=col,
+                                       padx=5, pady=5, sticky="nsew")
+                    continue
+
                 else:
                     value_text = str(item.get(header, ""))
                     fg_color = None
 
-                label = ctk.CTkLabel(self, text=value_text, anchor="center", fg_color=fg_color)
+                label = ctk.CTkLabel(self, text=value_text,
+                                     anchor="center", fg_color=fg_color)
                 label.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
 
-        # Configurar redimensionamento das células
+        # Configure cell resizing
         for i in range(len(headers)):
             self.grid_columnconfigure(i, weight=1)
 
-        # Configurar redimensionamento da tabela
+        # Configure table resizing
         self.grid_rowconfigure(0, weight=1)
