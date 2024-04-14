@@ -45,7 +45,7 @@ pip install -r requirements.txt
 ### Run the application
 
 ```bash
-pyinstaller --onefile --noconsole --icon=images/tkinter.png --name "Simple Shop" --add-data "images;images" --add-data --add-data ".venv\Lib\site-packages\babel;babel" --paths=.venv\Scripts app.py
+pyinstaller --onefile --noconsole --icon=images/tkinter.png --add-data "images;images" --add-data ".venv\Lib\site-packages\babel;babel" --paths=.venv\Lib\site-packages --name "Simple Shop"  app.py
 ```
 
 ## Contributing
