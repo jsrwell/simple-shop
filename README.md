@@ -9,29 +9,29 @@ This project is a simple shop management system built using Python and Tkinter. 
 ### Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/jsrwell/simple-shop.git
 ```
 
 ### Navigate to the project directory
 
 ```bash
-cd yourproject
+cd simple-shop
 ```
 
 ### Create and activate a virtual environment
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 For Windows:
 ```bash
-.\venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 For Unix/Linux:
 ```bash
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### Install the required dependencies
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 ### Run the application
 
 ```bash
-pyinstaller --onefile --noconsole --icon=images/tkinter.png --add-data "images;images" --add-data "inventory.db;." --add-data ".venv\Lib\site-packages\babel;babel" --paths=.venv\Scripts app.py
+pyinstaller --onefile --noconsole --icon=images/tkinter.png --name "Simple Shop" --add-data "images;images" --add-data --add-data ".venv\Lib\site-packages\babel;babel" --paths=.venv\Scripts app.py
 ```
 
 ## Contributing
