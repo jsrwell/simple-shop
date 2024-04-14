@@ -25,6 +25,9 @@ from db.handlers import (
 # Check if the database exists and create it if it doesn't
 check_database()
 
+# Get the base directory of the application
+basedir = os.path.dirname(__file__)
+
 
 class App(ctk.CTk):
     """Main application class."""
@@ -65,25 +68,29 @@ class App(ctk.CTk):
     def load_images(self):
         """Load images for the application."""
 
-        image_path = os.path.join(os.path.dirname(
-            os.path.realpath(__file__)), "images")
-        self.logo_image = ctk.CTkImage(Image.open(os.path.join(
-            image_path, "tkinter.png")), size=(26, 26))
+        image_path = os.path.join(basedir, "images")
+
+        self.logo_image = ctk.CTkImage(Image.open(
+            os.path.join(image_path, "tkinter.png")), size=(26, 26))
         self.large_test_image = ctk.CTkImage(Image.open(
             os.path.join(image_path, "manager.png")), size=(1000, 200))
         self.home_image = ctk.CTkImage(
             light_image=Image.open(os.path.join(image_path, "home_dark.png")),
             dark_image=Image.open(os.path.join(image_path, "home_light.png")),
-            size=(20, 20))
+            size=(20, 20)
+        )
         self.chat_image = ctk.CTkImage(
             light_image=Image.open(os.path.join(image_path, "chat_dark.png")),
             dark_image=Image.open(os.path.join(image_path, "chat_light.png")),
-            size=(20, 20))
+            size=(20, 20)
+        )
         self.add_user_image = ctk.CTkImage(
             light_image=Image.open(os.path.join(
                 image_path, "add_user_dark.png")),
             dark_image=Image.open(os.path.join(
-                image_path, "add_user_light.png")), size=(20, 20))
+                image_path, "add_user_light.png")),
+            size=(20, 20)
+        )
 
     def create_navigation_frame(self):
         """Create the navigation frame."""
@@ -182,7 +189,8 @@ class App(ctk.CTk):
         self.scrollable_table_frame = ScrollableTableFrame(
             master=self.home_frame, product_entrys=data, app_instance=self)
         self.scrollable_table_frame.grid(
-            row=2, column=0, columnspan=4, padx=20, pady=(0, 10), sticky="nsew")
+            row=2, column=0, columnspan=4,
+            padx=20, pady=(0, 10), sticky="nsew")
 
         # Configure the last row to expand when the window is resized
         self.home_frame.grid_rowconfigure(2, weight=1)
@@ -345,7 +353,8 @@ class App(ctk.CTk):
         texto = ("Obrigado por usar nossa aplicação!\n\n"
                  "Estamos sempre trabalhando em novas implementações "
                  "para melhorar sua experiência.\n\n"
-                 "Se precisar de ajuda ou tiver alguma sugestão, entre em contato conosco:\n"
+                 "Se precisar de ajuda ou tiver alguma sugestão, entre em "
+                 "contato conosco:\n"
                  "E-mail: wellingtonjsramos@hotmail.com\n"
                  "Telefone: +55 (41) 99725-8110")
 

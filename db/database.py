@@ -1,7 +1,13 @@
 import os
 import sqlite3
+import sys
 
-DB_FILE = "inventory.db"
+if getattr(sys, 'frozen', False):
+    basedir = os.path.dirname(sys.executable)
+else:
+    basedir = os.path.dirname(os.path.abspath(__file__))
+
+DB_FILE = os.path.join(basedir, "inventory.db")
 
 
 def create_table():
@@ -22,14 +28,12 @@ def create_table():
 
 def check_database():
     """Check if the database exists and create it if it doesn't."""
-
     if not os.path.exists(DB_FILE):
         create_table()
 
 
 def print_tables():
     """Print all tables and their contents in the database."""
-
     with sqlite3.connect(DB_FILE) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
